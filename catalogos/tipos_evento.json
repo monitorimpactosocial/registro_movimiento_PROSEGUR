@@ -1,0 +1,46 @@
+[
+    {
+        "id": "ilicita",
+        "nombre": "Actividades ilícitas dentro de la propiedad"
+    },
+    {
+        "id": "no_registro",
+        "nombre": "Personas que no registraron entrada"
+    },
+    {
+        "id": "circulacion",
+        "nombre": "Circulación no autorizada"
+    },
+    {
+        "id": "caza",
+        "nombre": "Caza ilegal"
+    },
+    {
+        "id": "pesca",
+        "nombre": "Pesca no autorizada"
+    },
+    {
+        "id": "madera",
+        "nombre": "Extracción de madera"
+    },
+    {
+        "id": "invasion",
+        "nombre": "Invasión o ingreso irregular"
+    },
+    {
+        "id": "conflicto",
+        "nombre": "Conflicto con personas"
+    },
+    {
+        "id": "dano",
+        "nombre": "Daño a infraestructura"
+    },
+    {
+        "id": "hallazgo",
+        "nombre": "Hallazgo relevante"
+    },
+    {
+        "id": "otro",
+        "nombre": "Otro (Especificar)"
+    }
+]

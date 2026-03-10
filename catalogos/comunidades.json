@@ -1,0 +1,50 @@
+[
+    {
+        "id": "c1",
+        "nombre": "Paso Horqueta"
+    },
+    {
+        "id": "c2",
+        "nombre": "Paso Mbutu"
+    },
+    {
+        "id": "c3",
+        "nombre": "Roberto L. Petit"
+    },
+    {
+        "id": "c4",
+        "nombre": "San Alfredo"
+    },
+    {
+        "id": "c5",
+        "nombre": "Loreto"
+    },
+    {
+        "id": "c6",
+        "nombre": "Colonia Jorge Sebastián Miranda"
+    },
+    {
+        "id": "c7",
+        "nombre": "Arroyito"
+    },
+    {
+        "id": "c8",
+        "nombre": "Horqueta"
+    },
+    {
+        "id": "c9",
+        "nombre": "Concepción"
+    },
+    {
+        "id": "c10",
+        "nombre": "Comunidad Indígena Redención"
+    },
+    {
+        "id": "c11",
+        "nombre": "Comunidad Indígena Vy'a Renda"
+    },
+    {
+        "id": "otro",
+        "nombre": "Otro (Especificar)"
+    }
+]

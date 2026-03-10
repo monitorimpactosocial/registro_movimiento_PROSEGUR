@@ -1,0 +1,38 @@
+[
+    {
+        "id": "pie",
+        "nombre": "A pie"
+    },
+    {
+        "id": "moto",
+        "nombre": "Motocicleta"
+    },
+    {
+        "id": "camioneta",
+        "nombre": "Camioneta"
+    },
+    {
+        "id": "auto",
+        "nombre": "Automóvil"
+    },
+    {
+        "id": "tractor",
+        "nombre": "Tractor"
+    },
+    {
+        "id": "camion",
+        "nombre": "Camión"
+    },
+    {
+        "id": "bici",
+        "nombre": "Bicicleta"
+    },
+    {
+        "id": "embarcacion",
+        "nombre": "Embarcación"
+    },
+    {
+        "id": "otro",
+        "nombre": "Otro (Especificar)"
+    }
+]

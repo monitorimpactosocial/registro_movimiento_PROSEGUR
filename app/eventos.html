@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evento - PROSEGUR</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="bg-warning-light">
+    <header class="app-header compact bg-warning">
+        <button class="back-btn" onclick="window.location.href='index.html'">
+            <span class="material-icons">arrow_back</span>
+        </button>
+        <h2>Reporte de Novedad / Evento</h2>
+    </header>
+
+    <main class="form-container">
+        <form id="evento-form" onsubmit="event.preventDefault(); App.saveEvento();">
+
+            <section class="form-section warn-border">
+                <div class="form-group">
+                    <label for="registrante">Nombre del Guardia/Registrante *</label>
+                    <input type="text" id="registrante" name="registrante" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="puesto_control">Puesto de Control o Ubicación *</label>
+                    <select id="puesto_control" name="puesto_control" required>
+                        <option value="">Seleccione...</option>
+                    </select>
+                </div>
+            </section>
+
+            <section class="form-section">
+                <h3>Detalles del Incidente</h3>
+
+                <div class="form-group">
+                    <label for="tipo_evento">Tipo de Evento *</label>
+                    <select id="tipo_evento" name="tipo_evento" required onchange="App.handleSpecify('tipo_evento')">
+                        <option value="">Seleccione...</option>
+                    </select>
+                    <input type="text" id="tipo_evento_otro" class="hidden specify-input"
+                        placeholder="Especifique el evento">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fecha_evento">Fecha</label>
+                        <input type="date" id="fecha_evento" name="fecha_evento" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="hora_evento">Hora Aprox.</label>
+                        <input type="time" id="hora_evento" name="hora_evento" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="lugar_evento">Lugar / Parcela del Evento *</label>
+                    <input type="text" id="lugar_evento" name="lugar_evento" required
+                        placeholder="Ej. Bloque 5, cerca del río...">
+                </div>
+
+                <div class="form-group">
+                    <label for="descripcion_evento">Descripción Detallada *</label>
+                    <textarea id="descripcion_evento" name="descripcion_evento" rows="4" required
+                        placeholder="Relate detalladamente cómo sucedió, quiénes intervinieron y otras observaciones relevantes."></textarea>
+                </div>
+            </section>
+
+            <section class="form-section">
+                <h3>Involucrados y Evidencia</h3>
+
+                <div class="form-group">
+                    <label for="nivel_gravedad">Nivel de Gravedad *</label>
+                    <select id="nivel_gravedad" name="nivel_gravedad" required>
+                        <option value="baja">Baja</option>
+                        <option value="media">Media</option>
+                        <option value="alta">Alta</option>
+                        <option value="critica">Crítica</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cantidad_involucrados">Est. Personas Involucradas</label>
+                        <input type="number" id="cantidad_involucrados" name="cantidad_involucrados" min="0" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="medio_transporte">Vehículo Involucrado</label>
+                        <select id="medio_transporte" name="medio_transporte"
+                            onchange="App.handleSpecify('medio_transporte')">
+                            <option value="">Ninguno o NS/NC</option>
+                        </select>
+                    </div>
+                </div>
+                <input type="text" id="medio_transporte_otro" class="hidden specify-input"
+                    placeholder="Especifique el transporte">
+            </section>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-warning btn-block btn-lg shadow">
+                    <span class="material-icons">report</span> Guardar Evento
+                </button>
+            </div>
+        </form>
+    </main>
+
+    <script src="js/db.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            App.initEventoFlow();
+        });
+    </script>
+</body>
+
+</html>

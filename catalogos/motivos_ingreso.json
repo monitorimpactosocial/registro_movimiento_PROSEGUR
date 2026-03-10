@@ -1,0 +1,42 @@
+[
+    {
+        "id": "pesca",
+        "nombre": "Pesca"
+    },
+    {
+        "id": "caza",
+        "nombre": "Caza"
+    },
+    {
+        "id": "recoleccion_madera",
+        "nombre": "Recolección de madera"
+    },
+    {
+        "id": "recoleccion_otros",
+        "nombre": "Recolección de otros recursos"
+    },
+    {
+        "id": "trabajo",
+        "nombre": "Trabajo"
+    },
+    {
+        "id": "visita",
+        "nombre": "Visita"
+    },
+    {
+        "id": "transito",
+        "nombre": "Tránsito"
+    },
+    {
+        "id": "comunidad",
+        "nombre": "Actividad comunitaria"
+    },
+    {
+        "id": "gestion",
+        "nombre": "Gestión personal"
+    },
+    {
+        "id": "otro",
+        "nombre": "Otro (Especificar)"
+    }
+]

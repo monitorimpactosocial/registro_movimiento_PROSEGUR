@@ -1,0 +1,22 @@
+[
+    {
+        "id": "p1",
+        "nombre": "Portería Principal"
+    },
+    {
+        "id": "p2",
+        "nombre": "Puesto Forestal Norte"
+    },
+    {
+        "id": "p3",
+        "nombre": "Puesto Forestal Sur"
+    },
+    {
+        "id": "p4",
+        "nombre": "Vigilancia Móvil 1"
+    },
+    {
+        "id": "p5",
+        "nombre": "Vigilancia Móvil 2"
+    }
+]

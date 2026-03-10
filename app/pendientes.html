@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sincronización - PROSEGUR</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+    <header class="app-header compact bg-dark">
+        <button class="back-btn" onclick="window.location.href='index.html'">
+            <span class="material-icons">arrow_back</span>
+        </button>
+        <h2>Datos Pendientes (Offline)</h2>
+    </header>
+
+    <main class="sync-container">
+
+        <div class="sync-status-card">
+            <div class="stats">
+                <div class="stat-item">
+                    <span id="count-entradas-salidas" class="stat-value">0</span>
+                    <span class="stat-label">Movimientos</span>
+                </div>
+                <div class="stat-item">
+                    <span id="count-eventos" class="stat-value">0</span>
+                    <span class="stat-label">Eventos</span>
+                </div>
+            </div>
+
+            <button id="btn-sync-all" class="btn btn-primary btn-block btn-lg mt-3" onclick="App.syncAll()">
+                <span class="material-icons">sync</span> Subir Registros Ahora
+            </button>
+            <p class="text-hint text-center mt-2">Asegúrese de tener conexión a Internet antes de sincronizar.</p>
+        </div>
+
+        <section class="records-list">
+            <h3>Registros en el Dispositivo</h3>
+            <div id="lista-pendientes" class="card-list">
+                <!-- Data will be loaded here by JS -->
+                <p class="text-center text-hint" id="empty-msg">No hay registros pendientes u offline.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="js/db.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            App.loadPendientes();
+        });
+    </script>
+</body>
+
+</html>
