@@ -55,7 +55,8 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="acompanantes">Acompañantes</label>
-                        <input type="number" id="acompanantes" name="acompanantes" min="0" value="0">
+                        <input type="number" id="acompanantes" name="acompanantes" min="0" value="0"
+                            onchange="App.handleAcompanantes()">
                     </div>
                     <div class="form-group">
                         <label for="sexo">Sexo (Opc.)</label>
@@ -66,6 +67,9 @@
                         </select>
                     </div>
                 </div>
+
+                <!-- Contenedor dinámico para detalles de los acompañantes -->
+                <div id="acompanantes_container"></div>
             </section>
 
             <section class="form-section">

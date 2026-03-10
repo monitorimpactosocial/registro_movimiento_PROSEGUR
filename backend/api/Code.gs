@@ -10,7 +10,7 @@ function doPost(e) {
 
   // Inicializar cabeceras si las hojas están vacías
   if (sheetEntradas.getLastRow() === 0) {
-    sheetEntradas.appendRow(['ID', 'Timestamp', 'Sincronizado', 'Puesto', 'Registrante', 'Tipo', 'Transeúnte', 'Documento', 'Acompañantes', 'Sexo', 'Medio Transporte', 'Origen', 'Destino', 'Motivo', 'Observaciones']);
+    sheetEntradas.appendRow(['ID', 'Timestamp', 'Sincronizado', 'Puesto', 'Registrante', 'Tipo', 'Transeúnte', 'Documento', 'Cantidad Acompañantes', 'Detalle Acompañantes', 'Sexo', 'Medio Transporte', 'Origen', 'Destino', 'Motivo', 'Observaciones']);
   }
   if (sheetEventos.getLastRow() === 0) {
     sheetEventos.appendRow(['ID', 'Timestamp', 'Sincronizado', 'Puesto', 'Registrante', 'Tipo Evento', 'Fecha', 'Hora', 'Lugar', 'Descripción', 'Gravedad', 'Involucrados', 'Vehículo', 'Link Evidencia']);
@@ -34,6 +34,7 @@ function doPost(e) {
           p.transeunte_nombre,
           p.transeunte_doc,
           p.acompanantes,
+          p.detalle_acompanantes || 'Ninguno',
           p.sexo,
           p.medio_transporte,
           p.origen,

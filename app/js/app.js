@@ -153,6 +153,7 @@ const App = {
 
     // Maneja la opción "Otro (Especificar)" en Selects
     handleSpecify: function (selectId) {
+        // ... (existing code, untouched)
         const select = document.getElementById(selectId);
         const input = document.getElementById(`${selectId}_otro`);
         if (select && input) {
@@ -167,6 +168,33 @@ const App = {
         }
     },
 
+    // Maneja la creación dinámica de inputs para los Acompañantes
+    handleAcompanantes: function () {
+        const count = parseInt(document.getElementById('acompanantes').value) || 0;
+        const container = document.getElementById('acompanantes_container');
+        if (!container) return;
+
+        container.innerHTML = '';
+
+        if (count > 0 && count < 30) {
+            let html = '<div style="margin-top:1rem; padding-top:1rem; border-top: 1px dashed #ccc;"><h4>Datos de Acompañantes</h4>';
+            for (let i = 1; i <= count; i++) {
+                html += `
+                    <div style="background:#f4f6f8; padding: 10px; margin-bottom: 8px; border-radius: 4px;">
+                        <label style="font-size: 0.8rem; color: #005A9C;">Acompañante ${i}</label>
+                        <input type="text" name="acomp_nombre_${i}" placeholder="Nombre y Apellido" required style="margin-bottom: 5px;">
+                        <input type="text" name="acomp_doc_${i}" placeholder="Nro Documento (Opcional)">
+                    </div>
+                `;
+            }
+            html += '</div>';
+            container.innerHTML = html;
+        } else if (count >= 30) {
+            alert("El número de acompañantes excede el límite para carga individual. Ingrese el número total y detalle el contingente en Observaciones.");
+            document.getElementById('acompanantes').value = 0;
+        }
+    },
+
     // Guardar Entradas y Salidas
     saveRegistro: function () {
         const form = document.getElementById('registro-form');
@@ -176,6 +204,19 @@ const App = {
         if (data.medio_transporte === 'otro') data.medio_transporte = data.medio_transporte_otro;
         if (data.origen === 'otro') data.origen = data.origen_otro;
         if (data.motivo === 'otro') data.motivo = data.motivo_otro;
+
+        // Empaquetar acompañantes en un solo string para el Excel
+        const count = parseInt(data.acompanantes) || 0;
+        const acomp_list = [];
+        for (let i = 1; i <= count; i++) {
+            if (data[`acomp_nombre_${i}`]) {
+                const docStr = data[`acomp_doc_${i}`] ? `(Doc: ${data[`acomp_doc_${i}`]})` : '(Sin Doc)';
+                acomp_list.push(`${data[`acomp_nombre_${i}`]} ${docStr}`);
+                delete data[`acomp_nombre_${i}`];
+                delete data[`acomp_doc_${i}`];
+            }
+        }
+        data.detalle_acompanantes = acomp_list.length > 0 ? acomp_list.join(" | ") : "Ninguno";
 
         DB.saveRegistroMovimiento(data);
 
@@ -267,13 +308,8 @@ const App = {
         const pending = DB.getPendingSync();
         if (pending.total === 0) return;
 
-        // ESTA URL DEBE SER REEMPLAZADA POR LA QUE GENERE GOOGLE APPS SCRIPT AL HACER EL DEPLOY
-        const BACKEND_URL = "https://script.google.com/macros/s/TU_ID_DE_DESPLIEGUE_AQUI/exec";
-
-        if (BACKEND_URL.includes("TU_ID_DE_DESPLIEGUE_AQUI")) {
-            alert("ATENCION ADMINISTRADOR: Aún no se ha pegado la URL generada por Google Apps Script en app.js.");
-            return;
-        }
+        // URL generada por Google Apps Script
+        const BACKEND_URL = "https://script.google.com/macros/s/AKfycbwqCVymbgDR4tEut2tEsKlxzqf5C8ochTmigpBCim7Ml2EdMywV0Z7JrVcHdsr1PT-N7w/exec";
 
         const btn = document.getElementById('btn-sync-all');
         btn.innerHTML = '<span class="material-icons prompt-spin">cloud_upload</span> Sincronizando datos...';
