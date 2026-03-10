@@ -99,6 +99,20 @@
                 </div>
                 <input type="text" id="medio_transporte_otro" class="hidden specify-input"
                     placeholder="Especifique el transporte">
+
+                <div class="form-group" style="margin-top: 1rem;">
+                    <label for="evidencia_file">Evidencia Fotográfica (Opcional)</label>
+                    <input type="file" id="evidencia_file" accept="image/*,video/mp4" style="background: white;">
+                    <small class="text-hint">La foto se guardará en su teléfono y se sincronizará luego con el
+                        reporte.</small>
+                    <!-- Input oculto para guardar la imagen en Base64 una vez procesada -->
+                    <input type="hidden" id="evidencia_base64" name="evidencia_base64" value="">
+
+                    <div id="evidencia-preview" style="display:none; margin-top: 10px; text-align:center;">
+                        <img id="evidencia-img" src="" alt="Previsualización"
+                            style="max-width: 100%; max-height: 200px; border-radius: 8px; border: 1px solid #ddd;">
+                    </div>
+                </div>
             </section>
 
             <div class="form-actions">

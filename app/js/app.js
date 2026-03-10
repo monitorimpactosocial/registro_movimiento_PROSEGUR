@@ -120,6 +120,35 @@ const App = {
         const now = new Date();
         document.getElementById('fecha_evento').valueAsDate = now;
         document.getElementById('hora_evento').value = now.toTimeString().substring(0, 5);
+
+        // Listener para convertir Foto a Base64 localmente
+        const fileInput = document.getElementById('evidencia_file');
+        if (fileInput) {
+            fileInput.addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                // Si es mas grande de 5MB advertimos
+                if (file.size > 5 * 1024 * 1024) {
+                    alert("La imagen es muy pesada. Trate de no exceder los 5MB para una sincronización rápida.");
+                }
+
+                const reader = new FileReader();
+                reader.onloadend = function () {
+                    const base64String = reader.result;
+                    document.getElementById('evidencia_base64').value = base64String;
+
+                    // Mostrar preview si es imagen
+                    if (file.type.startsWith('image/')) {
+                        const preview = document.getElementById('evidencia-preview');
+                        const img = document.getElementById('evidencia-img');
+                        img.src = base64String;
+                        preview.style.display = 'block';
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+        }
     },
 
     // Maneja la opción "Otro (Especificar)" en Selects
@@ -228,23 +257,49 @@ const App = {
         list.innerHTML = htmlSnippet;
     },
 
-    // Simulador de Sincronización
-    syncAll: function () {
+    // Sincronización Real con Backend via Fetch
+    syncAll: async function () {
         if (!navigator.onLine) {
             alert("No hay conexión a internet. Conéctese a una red Wi-Fi o móvil para sincronizar.");
             return;
         }
 
+        const pending = DB.getPendingSync();
+        if (pending.total === 0) return;
+
+        // ESTA URL DEBE SER REEMPLAZADA POR LA QUE GENERE GOOGLE APPS SCRIPT AL HACER EL DEPLOY
+        const BACKEND_URL = "https://script.google.com/macros/s/TU_ID_DE_DESPLIEGUE_AQUI/exec";
+
+        if (BACKEND_URL.includes("TU_ID_DE_DESPLIEGUE_AQUI")) {
+            alert("ATENCION ADMINISTRADOR: Aún no se ha pegado la URL generada por Google Apps Script en app.js.");
+            return;
+        }
+
         const btn = document.getElementById('btn-sync-all');
-        btn.innerHTML = '<span class="material-icons prompt-spin">sync</span> Sincronizando datos...';
+        btn.innerHTML = '<span class="material-icons prompt-spin">cloud_upload</span> Sincronizando datos...';
         btn.disabled = true;
 
-        // Simulate network delay (En el futuro, aquí va el FETCH al Backend / Apps Script)
-        setTimeout(() => {
-            DB.markAsSynced();
-            DB.cleanupSynced();
-            alert("✅ Todos los registros fueron subidos con éxito al servidor.");
-            location.reload();
-        }, 1500);
+        try {
+            const response = await fetch(BACKEND_URL, {
+                method: 'POST',
+                body: JSON.stringify(pending)
+            });
+
+            const result = await response.json();
+
+            if (result.status === 'success') {
+                DB.markAsSynced();
+                DB.cleanupSynced();
+                alert("✅ Registros subidos exitosamente a la Google Sheet de PARACEL.");
+                location.reload();
+            } else {
+                throw new Error(result.message);
+            }
+        } catch (error) {
+            console.error("Error Sync:", error);
+            alert("❌ Ocurrió un error al sincronizar. Por favor, intente más tarde.\n" + error.message);
+            btn.innerHTML = '<span class="material-icons">sync</span> Reintentar';
+            btn.disabled = false;
+        }
     }
 };
