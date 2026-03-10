@@ -42,7 +42,7 @@ const App = {
     loadCatalog: async function (url, selectId) {
         try {
             // Utilizamos url relativas para Github Pages o localhost
-            const response = await fetch(`../catalogos/${url}`);
+            const response = await fetch(`catalogos/${url}`);
             if (!response.ok) throw new Error("HTTP " + response.status);
             const data = await response.json();
             const select = document.getElementById(selectId);

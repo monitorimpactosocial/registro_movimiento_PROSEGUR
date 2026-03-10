@@ -1,4 +1,42 @@
-<!DOCTYPE html>
+import os
+import glob
+import re
+
+base_dir = r"C:\Users\DiegoMeza\OneDrive - PARACEL S.A\MONITOREO_IMPACTO_SOCIAL_PARACEL\REGISTRO_ENTRADAS_EVENTOS_PROSEGUR"
+app_dir = os.path.join(base_dir, "app")
+
+# 1. Move HTML files and rewrite paths
+html_files = glob.glob(os.path.join(app_dir, "*.html"))
+index_content = ""
+
+for file_path in html_files:
+    filename = os.path.basename(file_path)
+    with open(file_path, "r", encoding="utf-8") as f:
+        content = f.read()
+    
+    # Update paths
+    content = content.replace('href="css/', 'href="app/css/')
+    content = content.replace('src="js/', 'src="app/js/')
+    
+    if filename != "index.html":
+        # Add checkAuth call
+        content = content.replace("App.initRegistroFlow();", "App.checkAuth();\n            App.initRegistroFlow();")
+        content = content.replace("App.initEventoFlow();", "App.checkAuth();\n            App.initEventoFlow();")
+        content = content.replace("App.loadPendientes();", "App.checkAuth();\n            App.loadPendientes();")
+    else:
+        # Save index content to manipulate later
+        index_content = content
+        continue
+
+    # write to root
+    new_path = os.path.join(base_dir, filename)
+    with open(new_path, "w", encoding="utf-8") as f:
+        f.write(content)
+        
+    os.remove(file_path)
+
+# 2. Re-write index.html with Login Screen
+new_index_html = """<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -93,4 +131,52 @@
         });
     </script>
 </body>
-</html>
+</html>"""
+
+if index_content:
+    with open(os.path.join(base_dir, "index.html"), "w", encoding="utf-8") as f:
+        f.write(new_index_html)
+    os.remove(os.path.join(app_dir, "index.html"))
+
+# 3. Update app.js logic
+app_js_path = os.path.join(app_dir, "js", "app.js")
+with open(app_js_path, "r", encoding="utf-8") as f:
+    app_js = f.read()
+
+app_js = app_js.replace('../catalogos/', 'catalogos/')
+
+auth_logic = """
+    // Auth Logic
+    checkAuth: function() {
+        if (!localStorage.getItem('prosegur_auth_token')) {
+            window.location.href = 'index.html';
+        }
+    },
+    
+    login: function(e) {
+        e.preventDefault();
+        const user = document.getElementById('username').value;
+        const pass = document.getElementById('password').value;
+        
+        if (user === 'prosegur' && pass === 'pr0segur2026') {
+            localStorage.setItem('prosegur_auth_token', 'true');
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('dashboard-screen').style.display = 'block';
+            document.getElementById('logout-btn').style.display = 'block';
+        } else {
+            alert('Credenciales incorrectas');
+        }
+    },
+    
+    logout: function() {
+        localStorage.removeItem('prosegur_auth_token');
+        window.location.href = 'index.html';
+    },
+
+    """
+app_js = app_js.replace("initNetworkMonitoring: function() {", auth_logic + "initNetworkMonitoring: function() {")
+
+with open(app_js_path, "w", encoding="utf-8") as f:
+    f.write(app_js)
+
+print("Migration and auth setup complete.")
