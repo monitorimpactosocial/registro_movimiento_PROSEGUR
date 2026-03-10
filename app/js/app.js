@@ -309,7 +309,7 @@ const App = {
         if (pending.total === 0) return;
 
         // URL generada por Google Apps Script
-        const BACKEND_URL = "https://script.google.com/macros/s/AKfycbwqCVymbgDR4tEut2tEsKlxzqf5C8ochTmigpBCim7Ml2EdMywV0Z7JrVcHdsr1PT-N7w/exec";
+        const BACKEND_URL = "https://script.google.com/macros/s/AKfycbw46JtjM7ZhPwSLyTLpyoTk4QcGpaWtzseElflNy105Ubl7ZKlFmbyrUZxP5natbdjP/exec";
 
         const btn = document.getElementById('btn-sync-all');
         btn.innerHTML = '<span class="material-icons prompt-spin">cloud_upload</span> Sincronizando datos...';
