@@ -3,6 +3,33 @@
  */
 
 const App = {
+    // Auth Logic
+    checkAuth: function () {
+        if (!localStorage.getItem('prosegur_auth_token')) {
+            window.location.href = 'index.html';
+        }
+    },
+
+    login: function (e) {
+        e.preventDefault();
+        const user = document.getElementById('username').value;
+        const pass = document.getElementById('password').value;
+
+        if (user === 'prosegur' && pass === 'pr0segur2026') {
+            localStorage.setItem('prosegur_auth_token', 'true');
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('dashboard-screen').style.display = 'block';
+            document.getElementById('logout-btn').style.display = 'block';
+        } else {
+            alert('Credenciales incorrectas');
+        }
+    },
+
+    logout: function () {
+        localStorage.removeItem('prosegur_auth_token');
+        window.location.href = 'index.html';
+    },
+
     // Inicializar estado de red
     initNetworkMonitoring: function () {
         const updateOnlineStatus = () => {
