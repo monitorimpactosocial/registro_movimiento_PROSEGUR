@@ -8,6 +8,18 @@
     <link rel="stylesheet" href="app/css/style.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Motor de Mapas Offline -->
+    <link rel="stylesheet" href="app/css/leaflet.css">
+    <style>
+        #mapa-canvas {
+            width: 100%;
+            height: 350px;
+            background-color: #e5e5e5;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 2px solid #00763C;
+        }
+    </style>
 </head>
 
 <body class="bg-warning-light">
@@ -58,10 +70,16 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="lugar_evento">Lugar / Parcela del Evento *</label>
+                <div class="form-group" style="margin-bottom: 2rem;">
+                    <label>Mapa de Ubicación (Toca la parcela del evento) *</label>
+                    <p class="text-hint" style="margin-bottom: 10px;">Presiona directamente sobre el contorno
+                        verde/naranja correspondiente al lugar del hallazgo en el mapa. Autocompletará las coordenadas
+                        abajo sin necesidad de internet.</p>
+                    <div id="mapa-canvas"></div>
+
+                    <label for="lugar_evento">Lugar exacto del Evento *</label>
                     <input type="text" id="lugar_evento" name="lugar_evento" required
-                        placeholder="Ej. Bloque 5, cerca del río...">
+                        placeholder="Ej. Bloque 5 o selecciona en el mapa superior">
                 </div>
 
                 <div class="form-group">
@@ -125,10 +143,17 @@
 
     <script src="app/js/db.js"></script>
     <script src="app/js/app.js"></script>
+    <!-- Mapas Offline -->
+    <script src="app/js/leaflet.js"></script>
+    <script src="app/js/mapa_eventos.js"></script>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             App.checkAuth();
             App.initEventoFlow();
+
+            // Inicializa mapas offline
+            setTimeout(() => MapaApp.init(), 300);
         });
     </script>
 </body>
