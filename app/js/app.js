@@ -15,12 +15,20 @@ const App = {
         const user = document.getElementById('username').value;
         const pass = document.getElementById('password').value;
 
+        // Rol: GUARDIA
         if (user === 'prosegur' && pass === 'pr0segur2026') {
-            localStorage.setItem('prosegur_auth_token', 'true');
+            localStorage.setItem('prosegur_auth_token', 'guardia');
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('dashboard-screen').style.display = 'block';
             document.getElementById('logout-btn').style.display = 'block';
-        } else {
+            document.getElementById('puesto-label').textContent = 'PROSEGUR (Guardia)';
+        }
+        // Rol: ADMIN
+        else if (user === 'paracel' && pass === 'parac3l2026') {
+            localStorage.setItem('prosegur_auth_token', 'admin');
+            window.location.href = 'dashboard.html';
+        }
+        else {
             alert('Credenciales incorrectas');
         }
     },

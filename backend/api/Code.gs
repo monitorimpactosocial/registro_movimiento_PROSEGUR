@@ -120,6 +120,66 @@ function doOptions(e) {
 }
 
 // ------------------------------------------------------------------------
+// DASHBOARD ADMIN ESTADÍSTICO (METODO GET)
+// ------------------------------------------------------------------------
+
+function doGet(e) {
+  try {
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+    
+    // Estadísticas
+    const stats = {
+      entradasTotales: 0,
+      salidasTotales: 0,
+      eventosTotales: 0,
+      eventosRecientes: []
+    };
+
+    // 1. Contar Movimientos
+    const sheetMov = ss.getSheetByName('Movimientos');
+    if (sheetMov && sheetMov.getLastRow() > 1) {
+      const dataMov = sheetMov.getDataRange().getValues();
+      // Empezamos en 1 para saltar cabeceras
+      for (let i = 1; i < dataMov.length; i++) {
+        const tipo = dataMov[i][5];
+        if (tipo === 'entrada') stats.entradasTotales++;
+        if (tipo === 'salida') stats.salidasTotales++;
+      }
+    }
+
+    // 2. Contar Eventos y extraer los 10 más recientes
+    const sheetEvt = ss.getSheetByName('Eventos');
+    if (sheetEvt && sheetEvt.getLastRow() > 1) {
+      const dataEvt = sheetEvt.getDataRange().getValues();
+      stats.eventosTotales = dataEvt.length - 1;
+
+      // Iteramos al revés para agarrar los más nuevos (basado en el orden de fila)
+      for (let i = dataEvt.length - 1; i > 0 && stats.eventosRecientes.length < 10; i--) {
+        stats.eventosRecientes.push({
+          fecha: Utilities.formatDate(new Date(dataEvt[i][1]), Session.getScriptTimeZone(), "dd/MM/yyyy HH:mm"),
+          puesto: dataEvt[i][3],
+          tipo: dataEvt[i][5],
+          descripcion: dataEvt[i][9],
+          gravedad: dataEvt[i][10],
+          foto: dataEvt[i][13]
+        });
+      }
+    }
+
+    return ContentService.createTextOutput(JSON.stringify({
+      status: 'success',
+      data: stats
+    })).setMimeType(ContentService.MimeType.JSON);
+
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({
+      status: 'error',
+      message: error.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// ------------------------------------------------------------------------
 // ENVÍO DE CORREOS DIARIOS (CRON JOB)
 // ------------------------------------------------------------------------
 

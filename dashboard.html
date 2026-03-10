@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROSEGUR - Dashboard Admin</title>
+    <link rel="stylesheet" href="app/css/style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js para las gráficas Admin -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            border-bottom: 4px solid #00763C;
+        }
+
+        .stat-card h3 {
+            color: #666;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .charts-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-box {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        @media (max-width: 768px) {
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .table-container {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .badge-alta {
+            background-color: #d9534f;
+        }
+
+        .badge-media {
+            background-color: #f0ad4e;
+        }
+
+        .badge-baja {
+            background-color: #5cb85c;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+    <header class="app-header bg-primary">
+        <div class="logo">
+            <h1>PARACEL</h1>
+            <span class="subtitle">Panel de Control Gerencial</span>
+        </div>
+        <div class="user-info">
+            <span class="material-icons">admin_panel_settings</span>
+            <span>Admin</span>
+            <a href="#" onclick="App.logout()"
+                style="color:white; font-size: 0.75rem; text-decoration: underline; display:block;">Cerrar Sesión</a>
+        </div>
+    </header>
+
+    <main class="dashboard" style="max-width: 1200px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h2>Resumen Operativo Global</h2>
+            <button class="btn btn-secondary" onclick="loadDashboardData()" id="refresh-btn">
+                <span class="material-icons icon-sm">refresh</span> Actualizar
+            </button>
+        </div>
+
+        <div id="loader" style="text-align: center; padding: 3rem;">
+            <span class="material-icons prompt-spin" style="font-size: 3rem; color: #00763C;">sync</span>
+            <p>Conectando con Google Sheets...</p>
+        </div>
+
+        <div id="dashboard-content" style="display: none;">
+            <!-- KPIs -->
+            <div class="stats-grid">
+                <div class="stat-card" style="border-bottom-color: #005A9C;">
+                    <h3>Total Entradas Registradas</h3>
+                    <div class="value" id="val-entradas">0</div>
+                </div>
+                <div class="stat-card" style="border-bottom-color: #E26000;">
+                    <h3>Total Salidas Registradas</h3>
+                    <div class="value" id="val-salidas">0</div>
+                </div>
+                <div class="stat-card" style="border-bottom-color: #d9534f;">
+                    <h3>Eventos / Novedades</h3>
+                    <div class="value" id="val-eventos">0</div>
+                </div>
+            </div>
+
+            <!-- Gráficas -->
+            <div class="charts-container">
+                <div class="chart-box">
+                    <h3 style="margin-bottom: 1rem; color: #333; text-align:center;">Flujo de Movimientos</h3>
+                    <canvas id="movimientosChart"></canvas>
+                </div>
+                <div class="chart-box">
+                    <h3 style="margin-bottom: 1rem; color: #333; text-align:center;">Proporción Operativa</h3>
+                    <canvas id="proporcionChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Tabla de Eventos Recientes -->
+            <div class="table-container">
+                <h3 style="margin-bottom: 1rem; color: #333;">Últimos Eventos Críticos / Novedades</h3>
+                <table id="eventos-table">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Puesto / Lugar</th>
+                            <th>Tipo</th>
+                            <th>Descripción</th>
+                            <th>Gravedad</th>
+                            <th>Evidencia</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dinámico -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script src="app/js/app.js"></script>
+    <script>
+        // Validar que solo entre admin
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('prosegur_auth_token');
+            if (token !== 'admin') {
+                window.location.href = 'index.html';
+                return;
+            }
+            loadDashboardData();
+        });
+
+        let movChartInstance = null;
+        let propChartInstance = null;
+
+        async function loadDashboardData() {
+            document.getElementById('loader').style.display = 'block';
+            document.getElementById('dashboard-content').style.display = 'none';
+            document.getElementById('refresh-btn').disabled = true;
+
+            // URL del GET
+            const BACKEND_URL = "https://script.google.com/macros/s/AKfycbw46JtjM7ZhPwSLyTLpyoTk4QcGpaWtzseElflNy105Ubl7ZKlFmbyrUZxP5natbdjP/exec";
+
+            try {
+                const response = await fetch(BACKEND_URL);
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    renderDashboard(result.data);
+                } else {
+                    alert("Error obteniendo datos: " + result.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert("No se pudo conectar al servidor. Verifique su conexión a internet.");
+            } finally {
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('dashboard-content').style.display = 'block';
+                document.getElementById('refresh-btn').disabled = false;
+            }
+        }
+
+        function renderDashboard(data) {
+            // Llenar KPIs
+            document.getElementById('val-entradas').textContent = data.entradasTotales;
+            document.getElementById('val-salidas').textContent = data.salidasTotales;
+            document.getElementById('val-eventos').textContent = data.eventosTotales;
+
+            // Llenar Tabla
+            const tbody = document.querySelector('#eventos-table tbody');
+            tbody.innerHTML = '';
+
+            if (data.eventosRecientes.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#777;">No hay eventos registrados recientemente.</td></tr>';
+            } else {
+                data.eventosRecientes.forEach(ev => {
+                    let badgeClass = 'badge-baja';
+                    let grav = (ev.gravedad || '').toLowerCase();
+                    if (grav.includes('alta') || grav.includes('criti')) badgeClass = 'badge-alta';
+                    else if (grav.includes('media')) badgeClass = 'badge-media';
+
+                    let imgLink = ev.foto ? `<a href="${ev.foto}" target="_blank" style="color:#00763C;">Ver Foto</a>` : 'Sin adjunto';
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${ev.fecha}</td>
+                            <td><strong>${ev.puesto}</strong></td>
+                            <td>${ev.tipo}</td>
+                            <td style="max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${ev.descripcion}">${ev.descripcion}</td>
+                            <td><span class="badge ${badgeClass}">${(ev.gravedad || 'N/A').toUpperCase()}</span></td>
+                            <td>${imgLink}</td>
+                        </tr>
+                    `;
+                });
+            }
+
+            // Destruir graficos anteriores si existen
+            if (movChartInstance) movChartInstance.destroy();
+            if (propChartInstance) propChartInstance.destroy();
+
+            // Renderizar Graficas Chart.js
+            const ctxMov = document.getElementById('movimientosChart').getContext('2d');
+            movChartInstance = new Chart(ctxMov, {
+                type: 'bar',
+                data: {
+                    labels: ['Entradas', 'Salidas'],
+                    datasets: [{
+                        label: 'Total Acumulado Histórico',
+                        data: [data.entradasTotales, data.salidasTotales],
+                        backgroundColor: ['#005A9C', '#E26000'],
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+
+            const ctxProp = document.getElementById('proporcionChart').getContext('2d');
+            propChartInstance = new Chart(ctxProp, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Movimientos', 'Novedades/Eventos'],
+                    datasets: [{
+                        data: [data.entradasTotales + data.salidasTotales, data.eventosTotales],
+                        backgroundColor: ['#00763C', '#d9534f'],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
