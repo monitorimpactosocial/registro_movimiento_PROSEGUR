@@ -3,51 +3,115 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sincronización - PROSEGUR</title>
-    <link rel="stylesheet" href="app/css/style.css">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Sincronización - PROSEGUR V2</title>
+
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="app/css/style.css?v=2">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <meta name="theme-color" content="#f1f5f9">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <style>
+        .sync-badge {
+            background: var(--dark-gradient);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .sync-badge .val {
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .sync-badge .lbl {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            color: rgba(255, 255, 255, 0.7);
+        }
+    </style>
 </head>
 
-<body class="bg-light">
-    <header class="app-header compact bg-dark">
-        <button class="back-btn" onclick="window.location.href='index.html'">
-            <span class="material-icons">arrow_back</span>
-        </button>
-        <h2>Datos Pendientes (Offline)</h2>
+<body>
+
+    <header class="topbar" style="background: rgba(15,23,42,0.9); border-bottom: 0;">
+        <div class="brand-wrap">
+            <button class="logout-link" onclick="window.location.href='index.html'"
+                style="padding: 4px; border-radius: 50%; width: 40px; height: 40px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.1); color: white;">
+                <span class="material-icons">arrow_back</span>
+            </button>
+            <div class="titleblock" style="margin-left: 10px;">
+                <div class="title" style="color: white;">Sincronización API</div>
+                <div class="subtitle" style="color: var(--text-muted);">Registros Pendientes Offline</div>
+            </div>
+        </div>
     </header>
 
-    <main class="sync-container">
+    <div class="app-shell" style="max-width: 800px; padding-bottom: 80px;">
 
-        <div class="sync-status-card">
-            <div class="stats">
-                <div class="stat-item">
-                    <span id="count-entradas-salidas" class="stat-value">0</span>
-                    <span class="stat-label">Movimientos</span>
+        <div class="card mb-4" style="margin-bottom: 24px; border-top: 5px solid var(--text-strong);">
+            <div class="card-inner" style="padding: 24px;">
+
+                <div class="grid-2" style="margin-bottom: 24px;">
+                    <div class="sync-badge">
+                        <div class="val" id="count-entradas-salidas" style="color: var(--primary-400);">0</div>
+                        <div class="lbl">Movimientos</div>
+                    </div>
+                    <div class="sync-badge">
+                        <div class="val" id="count-eventos" style="color: var(--accent-400);">0</div>
+                        <div class="lbl">Novedades</div>
+                    </div>
                 </div>
-                <div class="stat-item">
-                    <span id="count-eventos" class="stat-value">0</span>
-                    <span class="stat-label">Eventos</span>
+
+                <div class="form-actions" style="margin-top: 0; padding-top: 0;">
+                    <button id="btn-sync-all" class="btn btn-dark"
+                        style="min-height: 60px; font-size: 1.1rem; border-radius: 18px;" onclick="App.syncAll()">
+                        <span class="material-icons">cloud_upload</span> Conectar y Empujar Pila
+                    </button>
                 </div>
+
+                <div style="text-align:center; margin-top: 16px;">
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">
+                        <span class="material-icons" style="font-size: 16px; vertical-align: middle;">wifi</span>
+                        Verifica tener acceso a red antes de sincronizar.
+                    </p>
+                </div>
+
             </div>
-
-            <button id="btn-sync-all" class="btn btn-primary btn-block btn-lg mt-3" onclick="App.syncAll()">
-                <span class="material-icons">sync</span> Subir Registros Ahora
-            </button>
-            <p class="text-hint text-center mt-2">Asegúrese de tener conexión a Internet antes de sincronizar.</p>
         </div>
 
-        <section class="records-list">
-            <h3>Registros en el Dispositivo</h3>
-            <div id="lista-pendientes" class="card-list">
-                <!-- Data will be loaded here by JS -->
-                <p class="text-center text-hint" id="empty-msg">No hay registros pendientes u offline.</p>
+        <h3 style="margin-top: 36px; padding-bottom: 12px; font-size: 1.1rem; color: var(--text-strong);">Cola de
+            Registros Locales</h3>
+        <div id="lista-pendientes" style="display: flex; flex-direction: column; gap: 16px;">
+            <!-- Render por JS -->
+            <div id="empty-msg"
+                style="text-align: center; padding: 40px; background: rgba(0,0,0,0.02); border-radius: var(--radius-md); border: 1px dashed var(--border);">
+                <span class="material-icons"
+                    style="font-size: 3rem; color: var(--text-muted); opacity: 0.5;">cloud_done</span>
+                <p style="margin-top: 12px; color: var(--text-strong); font-weight: 600;">Todo está sincronizado con el
+                    Comando Central.</p>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">No hay registros pendientes por enviar en su
+                    dispositivo local.</p>
             </div>
-        </section>
+        </div>
 
-    </main>
+    </div>
 
+    <!-- SCRIPTS -->
     <script src="app/js/db.js"></script>
     <script src="app/js/app.js"></script>
     <script>

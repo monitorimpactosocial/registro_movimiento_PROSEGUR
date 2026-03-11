@@ -3,151 +3,174 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PROSEGUR - Dashboard Admin</title>
-    <link rel="stylesheet" href="app/css/style.css">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Dashboard Admin - PROSEGUR V2</title>
+
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="app/css/style.css?v=2">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chart.js para las gráficas Admin -->
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 30px;
         }
 
         .stat-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            text-align: center;
-            border-bottom: 4px solid #00763C;
+            background: var(--surface-strong);
+            padding: 24px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            border-left: 6px solid;
+            border-color: var(--border);
+        }
+
+        .stat-card.c-primary {
+            border-color: var(--primary);
+        }
+
+        .stat-card.c-secondary {
+            border-color: var(--secondary);
+        }
+
+        .stat-card.c-warning {
+            border-color: var(--accent-500);
         }
 
         .stat-card h3 {
-            color: #666;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--text-muted);
             text-transform: uppercase;
+            margin-bottom: 8px;
             letter-spacing: 0.5px;
-            margin-bottom: 0.5rem;
+            border-bottom: 0;
+            padding-bottom: 0;
+            margin-top: 0;
         }
 
         .stat-card .value {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #333;
+            font-size: 3.2rem;
+            font-weight: 800;
+            color: var(--text-strong);
+            letter-spacing: -2px;
         }
 
         .charts-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-bottom: 2rem;
+            gap: 24px;
+            margin-bottom: 30px;
         }
 
-        .chart-box {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-
-        @media (max-width: 768px) {
+        @media (max-width: 900px) {
             .charts-container {
                 grid-template-columns: 1fr;
             }
         }
 
-        .table-container {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        .chart-box {
+            background: var(--surface-strong);
+            padding: 24px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .table-wrap {
             overflow-x: auto;
+            background: var(--surface-strong);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-        }
-
-        th,
-        td {
-            padding: 12px;
             text-align: left;
-            border-bottom: 1px solid #ddd;
         }
 
         th {
-            background-color: #f8f9fa;
-            color: #333;
+            background: #f1f5f9;
+            padding: 14px 18px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 1px;
         }
 
-        .badge {
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            color: white;
+        td {
+            padding: 16px 18px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.95rem;
         }
 
-        .badge-alta {
-            background-color: #d9534f;
+        tr:last-child td {
+            border-bottom: 0;
         }
 
-        .badge-media {
-            background-color: #f0ad4e;
+        .table-link {
+            color: var(--primary);
+            font-weight: 700;
+            text-decoration: none;
         }
 
-        .badge-baja {
-            background-color: #5cb85c;
+        .table-link:hover {
+            text-decoration: underline;
+            color: var(--primary-700);
         }
     </style>
 </head>
 
-<body class="bg-light">
-    <header class="app-header bg-primary">
-        <div class="logo">
-            <h1>PARACEL</h1>
-            <span class="subtitle">Panel de Control Gerencial</span>
+<body>
+
+    <header class="topbar">
+        <div class="brand-wrap">
+            <div class="brand-logo-box">
+                <span class="material-icons logo">pie_chart</span>
+            </div>
+            <div class="titleblock">
+                <div class="title">Comando Central</div>
+                <div class="subtitle">Administración Gerencial (API V2)</div>
+            </div>
         </div>
-        <div class="user-info">
-            <span class="material-icons">admin_panel_settings</span>
-            <span>Admin</span>
-            <a href="#" onclick="App.logout()"
-                style="color:white; font-size: 0.75rem; text-decoration: underline; display:block;">Cerrar Sesión</a>
+        <div class="status-wrap">
+            <button class="btn btn-secondary" onclick="loadDashboardData()" id="refresh-btn"
+                style="min-height: 40px; padding: 6px 16px; border-radius: 999px;">
+                <span class="material-icons" style="font-size: 18px;">refresh</span>
+            </button>
+            <button onclick="App.logout()" class="logout-link">
+                <span class="material-icons">logout</span>
+            </button>
         </div>
     </header>
 
-    <main class="dashboard" style="max-width: 1200px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-            <h2>Resumen Operativo Global</h2>
-            <button class="btn btn-secondary" onclick="loadDashboardData()" id="refresh-btn">
-                <span class="material-icons icon-sm">refresh</span> Actualizar
-            </button>
+    <div class="app-shell">
+
+        <div id="loader" style="text-align: center; padding: 60px 20px;">
+            <span class="material-icons prompt-spin" style="font-size: 4rem; color: var(--primary);">sync</span>
+            <p style="margin-top: 16px; color: var(--text-muted); font-weight: 600;">Comunicando con Backend Seguro...
+            </p>
         </div>
 
-        <div id="loader" style="text-align: center; padding: 3rem;">
-            <span class="material-icons prompt-spin" style="font-size: 3rem; color: #00763C;">sync</span>
-            <p>Conectando con Google Sheets...</p>
-        </div>
-
-        <div id="dashboard-content" style="display: none;">
+        <div id="dashboard-content" class="hidden">
             <!-- KPIs -->
             <div class="stats-grid">
-                <div class="stat-card" style="border-bottom-color: #005A9C;">
-                    <h3>Total Entradas Registradas</h3>
+                <div class="stat-card c-primary">
+                    <h3>Entradas Auditadas</h3>
                     <div class="value" id="val-entradas">0</div>
                 </div>
-                <div class="stat-card" style="border-bottom-color: #E26000;">
-                    <h3>Total Salidas Registradas</h3>
+                <div class="stat-card c-secondary">
+                    <h3>Salidas Confirmadas</h3>
                     <div class="value" id="val-salidas">0</div>
                 </div>
-                <div class="stat-card" style="border-bottom-color: #d9534f;">
-                    <h3>Eventos / Novedades</h3>
+                <div class="stat-card c-warning">
+                    <h3>Novedades / Alertas</h3>
                     <div class="value" id="val-eventos">0</div>
                 </div>
             </div>
@@ -155,150 +178,170 @@
             <!-- Gráficas -->
             <div class="charts-container">
                 <div class="chart-box">
-                    <h3 style="margin-bottom: 1rem; color: #333; text-align:center;">Flujo de Movimientos</h3>
+                    <h3
+                        style="margin-top:0; padding-bottom: 16px; border-bottom: 1px dashed var(--border); margin-bottom: 24px;">
+                        Flujo Histórico Transaccional</h3>
                     <canvas id="movimientosChart"></canvas>
                 </div>
                 <div class="chart-box">
-                    <h3 style="margin-bottom: 1rem; color: #333; text-align:center;">Proporción Operativa</h3>
-                    <canvas id="proporcionChart"></canvas>
+                    <h3
+                        style="margin-top:0; padding-bottom: 16px; border-bottom: 1px dashed var(--border); margin-bottom: 24px;">
+                        Proporción Operativa (Anomalías)</h3>
+                    <div style="max-height: 300px; display: flex; justify-content: center;">
+                        <canvas id="proporcionChart"></canvas>
+                    </div>
                 </div>
             </div>
 
-            <!-- Tabla de Eventos Recientes -->
-            <div class="table-container">
-                <h3 style="margin-bottom: 1rem; color: #333;">Últimos Eventos Críticos / Novedades</h3>
-                <table id="eventos-table">
-                    <thead>
-                        <tr>
-                            <th>Fecha</th>
-                            <th>Puesto / Lugar</th>
-                            <th>Tipo</th>
-                            <th>Descripción</th>
-                            <th>Gravedad</th>
-                            <th>Evidencia</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Dinámico -->
-                    </tbody>
-                </table>
+            <!-- Tabla de Eventos -->
+            <div class="card" style="margin-bottom: 40px;">
+                <div class="card-inner" style="padding: 0;">
+                    <div style="padding: 24px 24px 16px 24px; border-bottom: 1px solid var(--border);">
+                        <h3 style="margin: 0; padding: 0; border: 0;">Registro Acelerado de Anomalías Críticas</h3>
+                    </div>
+                    <div class="table-wrap"
+                        style="box-shadow: none; border-radius: 0 0 var(--radius-md) var(--radius-md);">
+                        <table id="eventos-table">
+                            <thead>
+                                <tr>
+                                    <th>Fecha / HORA</th>
+                                    <th>Puesto</th>
+                                    <th>Tipo</th>
+                                    <th style="max-width: 250px;">Descripción</th>
+                                    <th>Gravedad</th>
+                                    <th>Evidencia</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- JS Inject -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
-    </main>
 
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="app/js/db.js"></script>
     <script src="app/js/app.js"></script>
     <script>
-        // Validar que solo entre admin
         document.addEventListener('DOMContentLoaded', () => {
+            // Verificar Auth y Rol
             const token = localStorage.getItem('prosegur_auth_token');
-            if (token !== 'admin') {
+            const userData = JSON.parse(localStorage.getItem('prosegur_user_data') || '{}');
+
+            if (!token || userData.rol !== 'admin') {
+                alert("Acceso denegado. Se requieren privilegios de Administrador para ver el Dashboard General.");
                 window.location.href = 'index.html';
                 return;
             }
-            loadDashboardData();
+
+            loadDashboardData(token);
         });
 
         let movChartInstance = null;
         let propChartInstance = null;
 
-        async function loadDashboardData() {
-            document.getElementById('loader').style.display = 'block';
-            document.getElementById('dashboard-content').style.display = 'none';
+        async function loadDashboardData(token) {
+            document.getElementById('loader').classList.remove('hidden');
+            document.getElementById('dashboard-content').classList.add('hidden');
             document.getElementById('refresh-btn').disabled = true;
 
-            // URL del GET
-            const BACKEND_URL = "https://script.google.com/macros/s/AKfycbw46JtjM7ZhPwSLyTLpyoTk4QcGpaWtzseElflNy105Ubl7ZKlFmbyrUZxP5natbdjP/exec";
+            const BACKEND_URL = "https://script.google.com/macros/s/AKfycbyIYgflicV9RE3WiYVWO1UF131iRGOOQuGfRCVDkzDmndUQa04y8RnlszzgUlUcldieZw/exec";
 
             try {
-                const response = await fetch(BACKEND_URL);
+                const response = await fetch(BACKEND_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ accion: 'getDashboardData', token: token })
+                });
+
                 const result = await response.json();
 
-                if (result.status === 'success') {
+                if (result.success) {
                     renderDashboard(result.data);
+                } else if (result.authError) {
+                    alert("Sesión Expirada. Por favor inicie sesión nuevamente.");
+                    App.logout();
                 } else {
-                    alert("Error obteniendo datos: " + result.message);
+                    alert("Error en la conexión segura: " + result.message);
                 }
             } catch (err) {
                 console.error(err);
-                alert("No se pudo conectar al servidor. Verifique su conexión a internet.");
+                alert("Error de red. Verifique su acceso a internet.");
             } finally {
-                document.getElementById('loader').style.display = 'none';
-                document.getElementById('dashboard-content').style.display = 'block';
+                document.getElementById('loader').classList.add('hidden');
+                document.getElementById('dashboard-content').classList.remove('hidden');
                 document.getElementById('refresh-btn').disabled = false;
             }
         }
 
         function renderDashboard(data) {
-            // Llenar KPIs
+            // KPIs
             document.getElementById('val-entradas').textContent = data.entradasTotales;
             document.getElementById('val-salidas').textContent = data.salidasTotales;
             document.getElementById('val-eventos').textContent = data.eventosTotales;
 
-            // Llenar Tabla
+            // Table
             const tbody = document.querySelector('#eventos-table tbody');
             tbody.innerHTML = '';
-
             if (data.eventosRecientes.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#777;">No hay eventos registrados recientemente.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 40px; color: var(--text-muted); font-weight:600;">La base analítica está en cero. No hay Novedades.</td></tr>';
             } else {
                 data.eventosRecientes.forEach(ev => {
-                    let badgeClass = 'badge-baja';
-                    let grav = (ev.gravedad || '').toLowerCase();
-                    if (grav.includes('alta') || grav.includes('criti')) badgeClass = 'badge-alta';
-                    else if (grav.includes('media')) badgeClass = 'badge-media';
+                    let badgeClass = 'status-pill online';
+                    let grav = String(ev.gravedad || '').toLowerCase();
+                    if (grav.includes('alta') || grav.includes('criti') || grav.includes('críti')) badgeClass = 'status-pill offline';
 
-                    let imgLink = ev.foto ? `<a href="${ev.foto}" target="_blank" style="color:#00763C;">Ver Foto</a>` : 'Sin adjunto';
+                    let linkFotoHtml = ev.foto ? `<a href="${ev.foto}" target="_blank" class="table-link"><span class="material-icons" style="font-size:18px; vertical-align:middle;">image</span> Ver Drive</a>` : '<span style="color:#cbd5e1">-</span>';
 
                     tbody.innerHTML += `
                         <tr>
-                            <td>${ev.fecha}</td>
-                            <td><strong>${ev.puesto}</strong></td>
+                            <td style="font-weight:700;">${ev.fecha}</td>
+                            <td>${ev.puesto}</td>
                             <td>${ev.tipo}</td>
-                            <td style="max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${ev.descripcion}">${ev.descripcion}</td>
-                            <td><span class="badge ${badgeClass}">${(ev.gravedad || 'N/A').toUpperCase()}</span></td>
-                            <td>${imgLink}</td>
+                            <td style="max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${ev.descripcion}">${ev.descripcion}</td>
+                            <td><span class="${badgeClass}" style="transform: scale(0.8); transform-origin: left center;">${(ev.gravedad || 'N/A').toUpperCase()}</span></td>
+                            <td>${linkFotoHtml}</td>
                         </tr>
                     `;
                 });
             }
 
-            // Destruir graficos anteriores si existen
+            // Charts
             if (movChartInstance) movChartInstance.destroy();
             if (propChartInstance) propChartInstance.destroy();
 
-            // Renderizar Graficas Chart.js
             const ctxMov = document.getElementById('movimientosChart').getContext('2d');
             movChartInstance = new Chart(ctxMov, {
                 type: 'bar',
                 data: {
-                    labels: ['Entradas', 'Salidas'],
+                    labels: ['Personas y Vehículos que Entran', 'Personas y Vehículos que Salen'],
                     datasets: [{
-                        label: 'Total Acumulado Histórico',
+                        label: 'Histórico Operativo',
                         data: [data.entradasTotales, data.salidasTotales],
-                        backgroundColor: ['#005A9C', '#E26000'],
-                        borderRadius: 4
+                        backgroundColor: ['#00763C', '#005A9C'],
+                        borderRadius: 8
                     }]
                 },
-                options: {
-                    responsive: true,
-                    scales: { y: { beginAtZero: true } }
-                }
+                options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
             });
 
             const ctxProp = document.getElementById('proporcionChart').getContext('2d');
             propChartInstance = new Chart(ctxProp, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Movimientos', 'Novedades/Eventos'],
+                    labels: ['Circulación Estándar', 'Anomalías / Ev. Seguridad'],
                     datasets: [{
                         data: [data.entradasTotales + data.salidasTotales, data.eventosTotales],
-                        backgroundColor: ['#00763C', '#d9534f'],
-                        hoverOffset: 4
+                        backgroundColor: ['#10b981', '#ef4444'],
+                        borderWidth: 0,
+                        hoverOffset: 8
                     }]
                 },
-                options: {
-                    responsive: true,
-                }
+                options: { responsive: true, maintainAspectRatio: false }
             });
         }
     </script>

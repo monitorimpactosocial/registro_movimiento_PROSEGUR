@@ -1,0 +1,16 @@
+{
+    "name": "PROSEGUR Control Central",
+    "short_name": "PROSEGUR V2",
+    "description": "Aplicación oficial para control de seguridad perimetral de PARACEL.",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "background_color": "#f1f5f9",
+    "theme_color": "#00763C",
+    "icons": [
+        {
+            "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Prosegur_logo.svg/512px-Prosegur_logo.svg.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

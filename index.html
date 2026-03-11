@@ -1,96 +1,156 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PROSEGUR - Control de Accesos</title>
-    <link rel="stylesheet" href="app/css/style.css">
-    <!-- Iconos de Material Design -->
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>PROSEGUR API V2 - Control de Accesos</title>
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <!-- CSS y Fuentes -->
+    <link rel="stylesheet" href="app/css/style.css?v=2">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        .login-container { max-width: 400px; margin: 4rem auto; padding: 2rem; background: #fff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; }
-        .login-container h2 { color: #00763C; margin-bottom: 1.5rem; }
-    </style>
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#f1f5f9">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
+
 <body>
-    <header class="app-header">
-        <div class="logo">
-            <h1>PARACEL</h1>
-            <span class="subtitle">Monitoreo de Impacto Social</span>
+
+    <!-- TOPBAR MODO SISTEMA -->
+    <header class="topbar">
+        <div class="brand-wrap">
+            <div class="brand-logo-box">
+                <span class="material-icons logo">security</span>
+            </div>
+            <div class="titleblock">
+                <div class="title">PARACEL</div>
+                <div class="subtitle" id="puesto-label">PROSEGUR Seguridad</div>
+            </div>
         </div>
-        <div class="user-info">
-            <span class="material-icons">account_circle</span>
-            <span id="puesto-label">PROSEGUR</span>
-            <a href="#" onclick="App.logout()" id="logout-btn" style="display:none; color:white; font-size: 0.75rem; text-decoration: underline;">Cerrar Sesión</a>
+        <div class="status-wrap">
+            <div id="connection-status" class="status-pill online">
+                <span class="material-icons" style="font-size:16px;">wifi</span>
+                <span>Conectado</span>
+            </div>
+            <button onclick="App.logout()" id="logout-btn" class="logout-link hidden">
+                <span class="material-icons">logout</span>
+            </button>
         </div>
     </header>
 
-    <div id="login-screen" class="login-container">
-        <h2>Acceso Restringido</h2>
-        <form id="login-form" onsubmit="App.login(event)">
-            <div class="form-group">
-                <input type="text" id="username" placeholder="Usuario" required autocomplete="off">
+    <div class="app-shell">
+
+        <!-- LOG IN SCREEN -->
+        <div id="login-screen" class="login-card">
+            <div class="login-card-inner">
+                <div style="text-align: center; margin-bottom: 28px;">
+                    <span class="material-icons"
+                        style="font-size: 4rem; color: var(--primary); margin-bottom: 12px;">admin_panel_settings</span>
+                    <h2>Iniciar Sesión</h2>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Plataforma de Control de Accesos</p>
+                </div>
+
+                <form id="login-form" onsubmit="App.login(event)">
+                    <div class="form-group">
+                        <label>Usuario</label>
+                        <input type="text" id="username" placeholder="Ej: prosegur" required autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label>Contraseña</label>
+                        <input type="password" id="password" placeholder="••••••••" required>
+                    </div>
+
+                    <div id="login-error" class="hidden"
+                        style="margin-top: 14px; padding: 12px; background: var(--danger-soft); color: var(--danger); border-radius: 8px; font-size: 0.85rem; font-weight: 600;">
+                        <span class="material-icons" style="font-size: 16px; vertical-align: middle;">error</span>
+                        <span id="login-error-text">Credenciales incorrectas</span>
+                    </div>
+
+                    <div style="margin-top: 24px;">
+                        <button type="submit" id="btn-login-submit" class="btn btn-primary">
+                            <span class="material-icons">login</span> Ingresar
+                        </button>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <input type="password" id="password" placeholder="Contraseña" required>
+        </div>
+
+        <!-- MAIN DASHBOARD MENU -->
+        <main id="dashboard-screen" class="hidden">
+            <div style="margin-bottom: 32px; text-align: center;">
+                <h2>Registro de Operaciones</h2>
+                <p style="color: var(--text-muted);">Seleccione el módulo de captura de datos</p>
             </div>
-            <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
-        </form>
+
+            <div class="dashboard-grid">
+
+                <a href="registro.html?tipo=entrada" class="btn-module m-primary">
+                    <span class="material-icons icon" style="color: var(--primary);">login</span>
+                    <div class="text">Entrada de Planta</div>
+                    <div class="sub">Personal, visitas y proveedores</div>
+                </a>
+
+                <a href="registro.html?tipo=salida" class="btn-module m-secondary">
+                    <span class="material-icons icon" style="color: var(--secondary);">logout</span>
+                    <div class="text">Salida de Planta</div>
+                    <div class="sub">Registro de egresos</div>
+                </a>
+
+                <a href="eventos.html" class="btn-module m-warning">
+                    <span class="material-icons icon" style="color: var(--accent-500);">report_problem</span>
+                    <div class="text">Novedades / Eventos</div>
+                    <div class="sub">Incidentes de seguridad</div>
+                </a>
+
+                <a href="pendientes.html" class="btn-module m-dark">
+                    <div class="notification-badge hidden" id="badge-pendientes">0</div>
+                    <span class="material-icons icon" style="color: var(--text-muted);">cloud_sync</span>
+                    <div class="text">Sincronización</div>
+                    <div class="sub">Guardado Offline <span id="sync-subtext"></span></div>
+                </a>
+
+            </div>
+        </main>
+
     </div>
 
-    <main class="dashboard" id="dashboard-screen" style="display:none;">
-        <div class="welcome-box">
-            <h2>Registro de Accesos y Novedades</h2>
-            <p>Seleccione el tipo de registro a ingresar:</p>
-        </div>
-
-        <div class="action-grid">
-            <a href="registro.html?tipo=entrada" class="action-card bg-primary animate-hover">
-                <span class="material-icons">login</span>
-                <h3>Registrar Entrada</h3>
-                <p>Personal, vehículos y visitas ingresando.</p>
-            </a>
-            
-            <a href="registro.html?tipo=salida" class="action-card bg-secondary animate-hover">
-                <span class="material-icons">logout</span>
-                <h3>Registrar Salida</h3>
-                <p>Personal, vehículos y visitas saliendo.</p>
-            </a>
-
-            <a href="eventos.html" class="action-card bg-warning animate-hover">
-                <span class="material-icons">report_problem</span>
-                <h3>Registrar Evento</h3>
-                <p>Novedades, incidentes o anomalías en el puesto.</p>
-            </a>
-
-            <a href="pendientes.html" class="action-card bg-dark animate-hover">
-                <div class="notification-badge" id="badge-pendientes" style="display:none;">0</div>
-                <span class="material-icons">cloud_sync</span>
-                <h3>Sincronización</h3>
-                <p>Registros guardados en el dispositivo (Offline).</p>
-            </a>
-        </div>
-    </main>
-
-    <footer class="app-footer">
-        <p>Sistema Offline-First. PARACEL S.A.</p>
-        <div id="connection-status" class="status-indicator online">
-            <span class="material-icons icon-sm">wifi</span> <span class="status-text">Conectado</span>
-        </div>
-    </footer>
-
+    <!-- SCRIPTS -->
     <script src="app/js/db.js"></script>
     <script src="app/js/app.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Inicializar base de datos Local
+            DB.init();
+
+            // Check session
             if (localStorage.getItem('prosegur_auth_token')) {
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('dashboard-screen').style.display = 'block';
-                document.getElementById('logout-btn').style.display = 'block';
+                const userData = JSON.parse(localStorage.getItem('prosegur_user_data') || '{}');
+                document.getElementById('puesto-label').textContent = userData.nombre || 'Guardia';
+
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('dashboard-screen').classList.remove('hidden');
+                document.getElementById('logout-btn').classList.remove('hidden');
             }
             App.updateBadge();
+
+            // PWA Service Worker Registration
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js')
+                    .then(function (reg) {
+                        console.log('SeviceWorker (PROSEGUR) Registrado: ' + reg.scope);
+                    }).catch(function (err) {
+                        console.warn('SeviceWorker Falló:', err);
+                    });
+            }
         });
     </script>
 </body>
+
 </html>

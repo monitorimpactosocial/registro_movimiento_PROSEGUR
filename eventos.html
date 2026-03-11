@@ -3,147 +3,187 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Evento - PROSEGUR</title>
-    <link rel="stylesheet" href="app/css/style.css">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Evento - PROSEGUR V2</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <link rel="stylesheet" href="app/css/style.css?v=2">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Motor de Mapas Offline -->
     <link rel="stylesheet" href="app/css/leaflet.css">
+
+    <meta name="theme-color" content="#f1f5f9">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
         #mapa-canvas {
             width: 100%;
             height: 350px;
-            background-color: #e5e5e5;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            border: 2px solid #00763C;
+            background-color: #e2e8f0;
+            border-radius: 14px;
+            margin-bottom: 20px;
+            border: 2px solid var(--accent-500);
         }
     </style>
 </head>
 
-<body class="bg-warning-light">
-    <header class="app-header compact bg-warning">
-        <button class="back-btn" onclick="window.location.href='index.html'">
-            <span class="material-icons">arrow_back</span>
-        </button>
-        <h2>Reporte de Novedad / Evento</h2>
+<body>
+
+    <header class="topbar" style="background: rgba(255,255,255,0.9); border-bottom-color: var(--accent-500);">
+        <div class="brand-wrap">
+            <button class="logout-link" onclick="window.location.href='index.html'"
+                style="padding: 4px; border-radius: 50%; width: 40px; height: 40px; display:flex; align-items:center; justify-content:center; background:rgba(226,96,0,0.1); color: var(--accent-500);">
+                <span class="material-icons">arrow_back</span>
+            </button>
+            <div class="titleblock" style="margin-left: 10px;">
+                <div class="title" style="color: var(--text-strong);">Reporte de Novedad</div>
+                <div class="subtitle" style="color: var(--accent-500);">Eventos e Incidentes (Alta Prioridad)</div>
+            </div>
+        </div>
     </header>
 
-    <main class="form-container">
+    <div class="app-shell" style="max-width: 800px; padding-bottom: 80px;">
         <form id="evento-form" onsubmit="event.preventDefault(); App.saveEvento();">
 
-            <section class="form-section warn-border">
-                <div class="form-group">
-                    <label for="registrante">Nombre del Guardia/Registrante *</label>
-                    <input type="text" id="registrante" name="registrante" required>
-                </div>
+            <div class="card mb-4" style="margin-bottom: 24px; border-left: 5px solid var(--accent-500);">
+                <div class="card-inner" style="padding: 24px;">
+                    <h3><span class="material-icons"
+                            style="vertical-align: middle; color:var(--accent-500); font-size: 20px;">badge</span>
+                        Guardia Central</h3>
 
-                <div class="form-group">
-                    <label for="puesto_control">Puesto de Control o Ubicación *</label>
-                    <select id="puesto_control" name="puesto_control" required>
-                        <option value="">Seleccione...</option>
-                    </select>
-                </div>
-            </section>
-
-            <section class="form-section">
-                <h3>Detalles del Incidente</h3>
-
-                <div class="form-group">
-                    <label for="tipo_evento">Tipo de Evento *</label>
-                    <select id="tipo_evento" name="tipo_evento" required onchange="App.handleSpecify('tipo_evento')">
-                        <option value="">Seleccione...</option>
-                    </select>
-                    <input type="text" id="tipo_evento_otro" class="hidden specify-input"
-                        placeholder="Especifique el evento">
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="fecha_evento">Fecha</label>
-                        <input type="date" id="fecha_evento" name="fecha_evento" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="hora_evento">Hora Aprox.</label>
-                        <input type="time" id="hora_evento" name="hora_evento" required>
+                    <div class="form-grid">
+                        <div class="col-12 form-group">
+                            <label for="registrante">Nombre del Registrante *</label>
+                            <input type="text" id="registrante" name="registrante" required readonly
+                                style="background: var(--surface-soft); border-style: dashed;">
+                        </div>
+                        <div class="col-12 form-group">
+                            <label for="puesto_control">Ubicación del Guardia *</label>
+                            <select id="puesto_control" name="puesto_control" required>
+                                <option value="">Seleccione Puesto...</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="form-group" style="margin-bottom: 2rem;">
-                    <label>Mapa de Ubicación (Toca la parcela del evento) *</label>
-                    <p class="text-hint" style="margin-bottom: 10px;">Presiona directamente sobre el contorno
-                        verde/naranja correspondiente al lugar del hallazgo en el mapa. Autocompletará las coordenadas
-                        abajo sin necesidad de internet.</p>
-                    <div id="mapa-canvas"></div>
+            <div class="card mb-4" style="margin-bottom: 24px;">
+                <div class="card-inner" style="padding: 24px;">
+                    <h3><span class="material-icons"
+                            style="vertical-align: middle; color:var(--primary); font-size: 20px;">gavel</span> Detalles
+                        del Incidente</h3>
 
-                    <label for="lugar_evento">Lugar exacto del Evento *</label>
-                    <input type="text" id="lugar_evento" name="lugar_evento" required
-                        placeholder="Ej. Bloque 5 o selecciona en el mapa superior">
-                </div>
+                    <div class="form-grid">
+                        <div class="col-12 form-group">
+                            <label for="tipo_evento">Categoría del Evento *</label>
+                            <select id="tipo_evento" name="tipo_evento" required
+                                onchange="App.handleSpecify('tipo_evento')">
+                                <option value="">Seleccione...</option>
+                            </select>
+                            <input type="text" id="tipo_evento_otro" class="hidden specify-input"
+                                placeholder="Especifique el evento" style="margin-top:8px;">
+                        </div>
 
-                <div class="form-group">
-                    <label for="descripcion_evento">Descripción Detallada *</label>
-                    <textarea id="descripcion_evento" name="descripcion_evento" rows="4" required
-                        placeholder="Relate detalladamente cómo sucedió, quiénes intervinieron y otras observaciones relevantes."></textarea>
-                </div>
-            </section>
+                        <div class="col-6 form-group">
+                            <label for="fecha_evento">Fecha</label>
+                            <input type="date" id="fecha_evento" name="fecha_evento" required>
+                        </div>
+                        <div class="col-6 form-group">
+                            <label for="hora_evento">Hora Aprox.</label>
+                            <input type="time" id="hora_evento" name="hora_evento" required>
+                        </div>
 
-            <section class="form-section">
-                <h3>Involucrados y Evidencia</h3>
+                        <div class="col-12 form-group" style="margin-top: 14px;">
+                            <label>Geolocalización (Mapa Táctico) *</label>
+                            <p
+                                style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4;">
+                                Toca la parcela o sector correspondiente al hallazgo. La herramienta completará
+                                automáticamente el lugar exacto.
+                            </p>
+                            <div id="mapa-canvas"></div>
+                        </div>
 
-                <div class="form-group">
-                    <label for="nivel_gravedad">Nivel de Gravedad *</label>
-                    <select id="nivel_gravedad" name="nivel_gravedad" required>
-                        <option value="baja">Baja</option>
-                        <option value="media">Media</option>
-                        <option value="alta">Alta</option>
-                        <option value="critica">Crítica</option>
-                    </select>
-                </div>
+                        <div class="col-12 form-group">
+                            <label for="lugar_evento">Lugar Exacto (Referencia) *</label>
+                            <input type="text" id="lugar_evento" name="lugar_evento" required
+                                placeholder="Ej. Retiro 4, alambrado norte cortado...">
+                        </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="cantidad_involucrados">Est. Personas Involucradas</label>
-                        <input type="number" id="cantidad_involucrados" name="cantidad_involucrados" min="0" value="1">
-                    </div>
-                    <div class="form-group">
-                        <label for="medio_transporte">Vehículo Involucrado</label>
-                        <select id="medio_transporte" name="medio_transporte"
-                            onchange="App.handleSpecify('medio_transporte')">
-                            <option value="">Ninguno o NS/NC</option>
-                        </select>
-                    </div>
-                </div>
-                <input type="text" id="medio_transporte_otro" class="hidden specify-input"
-                    placeholder="Especifique el transporte">
-
-                <div class="form-group" style="margin-top: 1rem;">
-                    <label for="evidencia_file">Evidencia Fotográfica (Opcional)</label>
-                    <input type="file" id="evidencia_file" accept="image/*,video/mp4" style="background: white;">
-                    <small class="text-hint">La foto se guardará en su teléfono y se sincronizará luego con el
-                        reporte.</small>
-                    <!-- Input oculto para guardar la imagen en Base64 una vez procesada -->
-                    <input type="hidden" id="evidencia_base64" name="evidencia_base64" value="">
-
-                    <div id="evidencia-preview" style="display:none; margin-top: 10px; text-align:center;">
-                        <img id="evidencia-img" src="" alt="Previsualización"
-                            style="max-width: 100%; max-height: 200px; border-radius: 8px; border: 1px solid #ddd;">
+                        <div class="col-12 form-group">
+                            <label for="descripcion_evento">Descripción Detallada *</label>
+                            <textarea id="descripcion_evento" name="descripcion_evento" rows="5" required
+                                placeholder="Relate detalladamente los hechos, cómo y quiénes intervinieron..."></textarea>
+                        </div>
                     </div>
                 </div>
-            </section>
+            </div>
 
-            <div class="form-actions">
-                <button type="submit" class="btn btn-warning btn-block btn-lg shadow">
-                    <span class="material-icons">report</span> Guardar Evento
+            <div class="card" style="margin-bottom: 24px;">
+                <div class="card-inner" style="padding: 24px;">
+                    <h3><span class="material-icons"
+                            style="vertical-align: middle; color:var(--primary); font-size: 20px;">policy</span>
+                        Tipificación y Evidencia</h3>
+
+                    <div class="form-grid">
+                        <div class="col-12 form-group">
+                            <label for="nivel_gravedad" style="color: var(--danger);">Gravedad de la Novedad *</label>
+                            <select id="nivel_gravedad" name="nivel_gravedad" required style="font-weight: 700;">
+                                <option value="baja">BAJA</option>
+                                <option value="media">MEDIA</option>
+                                <option value="alta">ALTA</option>
+                                <option value="critica">CRÍTICA (Alerta Inmediata)</option>
+                            </select>
+                        </div>
+
+                        <div class="col-6 form-group">
+                            <label for="cantidad_involucrados">Est. Involucrados</label>
+                            <input type="number" id="cantidad_involucrados" name="cantidad_involucrados" min="0"
+                                value="1">
+                        </div>
+
+                        <div class="col-6 form-group">
+                            <label for="medio_transporte">Vehículo Implicado</label>
+                            <select id="medio_transporte" name="medio_transporte"
+                                onchange="App.handleSpecify('medio_transporte')">
+                                <option value="">Ninguno / NS.NC</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <input type="text" id="medio_transporte_otro" class="hidden specify-input"
+                                placeholder="Descripción de chapa / vehículo..." style="margin-bottom: 14px;">
+                        </div>
+
+                        <div class="col-12 form-group" style="padding-top: 20px; border-top: 1px dashed var(--border);">
+                            <label for="evidencia_file">Evidencia Fotográfica (Opcional)</label>
+                            <input type="file" id="evidencia_file" accept="image/*,video/mp4"
+                                style="background: white;">
+                            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 8px;">Las fotos pesadas
+                                se redimensionan localmente para no saturar la conectividad inestable.</p>
+
+                            <input type="hidden" id="evidencia_base64" name="evidencia_base64" value="">
+                            <div id="evidencia-preview" style="display:none; margin-top: 14px; text-align:center;">
+                                <img id="evidencia-img" src="" alt="Preview"
+                                    style="max-width: 100%; max-height: 240px; border-radius: 12px; box-shadow: var(--shadow-sm);">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                style="position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.92); backdrop-filter: var(--glass-blur); padding: 16px 24px; border-top: 1px solid var(--border); z-index: 100;">
+                <button type="submit" class="btn btn-warning"
+                    style="width: 100%; min-height: 56px; font-size: 1.1rem; border-radius: 18px;">
+                    <span class="material-icons">report</span> Archivar Novedad Offline
                 </button>
             </div>
         </form>
-    </main>
+    </div>
 
+    <!-- SCRIPTS -->
     <script src="app/js/db.js"></script>
     <script src="app/js/app.js"></script>
-    <!-- Mapas Offline -->
     <script src="app/js/leaflet.js"></script>
     <script src="app/js/mapa_eventos.js"></script>
 
@@ -151,8 +191,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             App.checkAuth();
             App.initEventoFlow();
-
-            // Inicializa mapas offline
             setTimeout(() => MapaApp.init(), 300);
         });
     </script>

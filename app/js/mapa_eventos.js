@@ -43,6 +43,25 @@ const MapaApp = {
                     },
                     onEachFeature: (feature, layer) => {
                         layer.on('click', (e) => {
+                            // Reset style de la capa previamente seleccionada
+                            if (MapaApp.selectedLayer) {
+                                // Encontrar a que grupo (geojsonLayers) pertenece la capa anterior para resturar su color
+                                MapaApp.geojsonLayers.forEach(group => {
+                                    if (group.hasLayer(MapaApp.selectedLayer)) {
+                                        group.resetStyle(MapaApp.selectedLayer);
+                                    }
+                                });
+                            }
+
+                            // Guardar la nueva capa seleccionada y aplicarle el highlight (amarillo fuerte)
+                            MapaApp.selectedLayer = layer;
+                            layer.setStyle({
+                                color: '#FFFF00', // Yellow highlight
+                                weight: 4,
+                                fillOpacity: 0.6,
+                                fillColor: '#FFFF00'
+                            });
+
                             // Extraer nombres posibles de la metadata del shapefile
                             const props = feature.properties;
 

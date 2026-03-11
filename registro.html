@@ -3,126 +3,172 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro - PROSEGUR</title>
-    <link rel="stylesheet" href="app/css/style.css">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Registro - PROSEGUR V2</title>
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <!-- CSS y Fuentes -->
+    <link rel="stylesheet" href="app/css/style.css?v=2">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- PWA -->
+    <meta name="theme-color" content="#f1f5f9">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
 
 <body>
-    <header class="app-header compact">
-        <button class="back-btn" onclick="window.location.href='index.html'">
-            <span class="material-icons">arrow_back</span>
-        </button>
-        <h2 id="page-title">Cargando...</h2>
+
+    <header class="topbar">
+        <div class="brand-wrap">
+            <button class="logout-link" onclick="window.location.href='index.html'"
+                style="padding: 4px; border-radius: 50%; width: 40px; height: 40px; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.05);">
+                <span class="material-icons">arrow_back</span>
+            </button>
+            <div class="titleblock" style="margin-left: 10px;">
+                <div class="title" id="page-title">Cargando...</div>
+                <div class="subtitle">Captura Operativa</div>
+            </div>
+        </div>
     </header>
 
-    <main class="form-container">
+    <div class="app-shell" style="max-width: 800px; padding-bottom: 80px;">
         <form id="registro-form" onsubmit="event.preventDefault(); App.saveRegistro();">
             <input type="hidden" id="tipo_movimiento" name="tipo_movimiento" value="">
 
-            <section class="form-section">
-                <h3>Datos Generales</h3>
+            <div class="card mb-4" style="margin-bottom: 24px;">
+                <div class="card-inner" style="padding: 24px;">
+                    <h3><span class="material-icons"
+                            style="vertical-align: middle; color:var(--primary); font-size: 20px;">badge</span> Datos
+                        Generales</h3>
 
-                <div class="form-group">
-                    <label for="registrante">Nombre del Guardia/Registrante *</label>
-                    <input type="text" id="registrante" name="registrante" required placeholder="Ej. Juan Pérez">
-                </div>
+                    <div class="form-grid">
+                        <div class="col-12 form-group">
+                            <label for="registrante">Guardia de Puesto *</label>
+                            <input type="text" id="registrante" name="registrante" required readonly
+                                style="background: var(--surface-soft); border-style: dashed;">
+                        </div>
 
-                <div class="form-group">
-                    <label for="puesto_control">Puesto de Control *</label>
-                    <select id="puesto_control" name="puesto_control" required>
-                        <option value="">Seleccione...</option>
-                    </select>
-                </div>
-            </section>
-
-            <section class="form-section">
-                <h3>Datos del Transeúnte</h3>
-
-                <div class="form-group">
-                    <label for="transeunte_nombre">Nombre y Apellido *</label>
-                    <input type="text" id="transeunte_nombre" name="transeunte_nombre" required
-                        placeholder="Nombre de quien ingresa/sale">
-                </div>
-
-                <div class="form-group">
-                    <label for="transeunte_doc">Documento (Opcional)</label>
-                    <input type="text" id="transeunte_doc" name="transeunte_doc" placeholder="Nro de C.I. o Pasaporte">
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="acompanantes">Acompañantes</label>
-                        <input type="number" id="acompanantes" name="acompanantes" min="0" value="0"
-                            onchange="App.handleAcompanantes()">
-                    </div>
-                    <div class="form-group">
-                        <label for="sexo">Sexo (Opc.)</label>
-                        <select id="sexo" name="sexo">
-                            <option value="">--</option>
-                            <option value="M">Masculino</option>
-                            <option value="F">Femenino</option>
-                        </select>
+                        <div class="col-12 form-group">
+                            <label for="puesto_control">Puesto de Control *</label>
+                            <select id="puesto_control" name="puesto_control" required>
+                                <option value="">Seleccione Puesto...</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Contenedor dinámico para detalles de los acompañantes -->
-                <div id="acompanantes_container"></div>
-            </section>
+            <div class="card mb-4" style="margin-bottom: 24px;">
+                <div class="card-inner" style="padding: 24px;">
+                    <h3><span class="material-icons"
+                            style="vertical-align: middle; color:var(--primary); font-size: 20px;">person</span> Datos
+                        del Transeúnte</h3>
 
-            <section class="form-section">
-                <h3>Movilidad y Ubicación</h3>
+                    <div class="form-grid">
+                        <div class="col-12 form-group">
+                            <label for="transeunte_nombre">Nombre y Apellido *</label>
+                            <input type="text" id="transeunte_nombre" name="transeunte_nombre" required
+                                placeholder="Persona que ingresa/sale">
+                        </div>
 
-                <div class="form-group">
-                    <label for="medio_transporte">Medio de Transporte *</label>
-                    <select id="medio_transporte" name="medio_transporte" required
-                        onchange="App.handleSpecify('medio_transporte')">
-                        <option value="">Seleccione...</option>
-                    </select>
-                    <input type="text" id="medio_transporte_otro" class="hidden specify-input"
-                        placeholder="Especifique el transporte">
+                        <div class="col-6 form-group">
+                            <label for="transeunte_doc">C.I. / Pasaporte</label>
+                            <input type="text" id="transeunte_doc" name="transeunte_doc" placeholder="Opcional">
+                        </div>
+
+                        <div class="col-6 form-group">
+                            <label for="sexo">Sexo</label>
+                            <select id="sexo" name="sexo">
+                                <option value="">--</option>
+                                <option value="M">Masculino</option>
+                                <option value="F">Femenino</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 form-group" style="padding-top: 14px; border-top: 1px dashed var(--border);">
+                            <label for="acompanantes">Acompañantes</label>
+                            <input type="number" id="acompanantes" name="acompanantes" min="0" value="0"
+                                onchange="App.handleAcompanantes()">
+                        </div>
+
+                        <!-- Dinámico Acompañantes -->
+                        <div class="col-12" id="acompanantes_container"></div>
+                    </div>
                 </div>
+            </div>
 
-                <div class="form-group">
-                    <label for="origen">Lugar de Origen *</label>
-                    <select id="origen" name="origen" required onchange="App.handleSpecify('origen')">
-                        <option value="">Seleccione...</option>
-                    </select>
-                    <input type="text" id="origen_otro" class="hidden specify-input" placeholder="Especifique origen">
+            <div class="card mb-4" style="margin-bottom: 24px;">
+                <div class="card-inner" style="padding: 24px;">
+                    <h3><span class="material-icons"
+                            style="vertical-align: middle; color:var(--primary); font-size: 20px;">commute</span>
+                        Movilidad y Destino</h3>
+
+                    <div class="form-grid">
+                        <div class="col-12 form-group">
+                            <label for="medio_transporte">Medio de Transporte *</label>
+                            <select id="medio_transporte" name="medio_transporte" required
+                                onchange="App.handleSpecify('medio_transporte')">
+                                <option value="">Seleccione...</option>
+                            </select>
+                            <input type="text" id="medio_transporte_otro" class="hidden specify-input"
+                                placeholder="Especifique tipo/chapa..." style="margin-top:8px;">
+                        </div>
+
+                        <div class="col-12 form-group">
+                            <label for="origen">Lugar de Origen *</label>
+                            <select id="origen" name="origen" required onchange="App.handleSpecify('origen')">
+                                <option value="">Seleccione...</option>
+                            </select>
+                            <input type="text" id="origen_otro" class="hidden specify-input"
+                                placeholder="Especifique origen..." style="margin-top:8px;">
+                        </div>
+
+                        <div class="col-12 form-group">
+                            <label for="destino">Destino (Retiro/Parcela) *</label>
+                            <input type="text" id="destino" name="destino" required
+                                placeholder="Hacia dónde se dirige...">
+                        </div>
+
+                        <div class="col-12 form-group">
+                            <label for="motivo">Motivo del Tránsito *</label>
+                            <select id="motivo" name="motivo" required onchange="App.handleSpecify('motivo')">
+                                <option value="">Seleccione...</option>
+                            </select>
+                            <input type="text" id="motivo_otro" class="hidden specify-input"
+                                placeholder="Especifique motivo..." style="margin-top:8px;">
+                        </div>
+                    </div>
                 </div>
+            </div>
 
-                <div class="form-group">
-                    <label for="destino">Lugar de Destino *</label>
-                    <input type="text" id="destino" name="destino" required placeholder="Ej. Retiro 3, Parcela X...">
+            <div class="card" style="margin-bottom: 24px;">
+                <div class="card-inner" style="padding: 24px;">
+                    <h3><span class="material-icons"
+                            style="vertical-align: middle; color:var(--primary); font-size: 20px;">notes</span>
+                        Observaciones</h3>
+                    <div class="form-group">
+                        <textarea id="observaciones" name="observaciones"
+                            placeholder="Carga o información adicional a destacar..."></textarea>
+                    </div>
                 </div>
+            </div>
 
-                <div class="form-group">
-                    <label for="motivo">Motivo de Ingreso/Desplazamiento *</label>
-                    <select id="motivo" name="motivo" required onchange="App.handleSpecify('motivo')">
-                        <option value="">Seleccione...</option>
-                    </select>
-                    <input type="text" id="motivo_otro" class="hidden specify-input" placeholder="Especifique motivo">
-                </div>
-            </section>
-
-            <section class="form-section">
-                <h3>Observaciones</h3>
-                <div class="form-group">
-                    <textarea id="observaciones" name="observaciones" rows="3"
-                        placeholder="Información adicional..."></textarea>
-                </div>
-            </section>
-
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary btn-block btn-lg shadow">
-                    <span class="material-icons">save</span> Guardar Registro Local
+            <!-- Botonera fija inferior -->
+            <div
+                style="position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.92); backdrop-filter: var(--glass-blur); padding: 16px 24px; border-top: 1px solid var(--border); z-index: 100;">
+                <button type="submit" class="btn btn-primary"
+                    style="width: 100%; min-height: 56px; font-size: 1.1rem; border-radius: 18px;">
+                    <span class="material-icons">save</span> Guardar Registro Offline
                 </button>
             </div>
         </form>
-    </main>
+    </div>
 
+    <!-- SCRIPTS -->
     <script src="app/js/db.js"></script>
     <script src="app/js/app.js"></script>
     <script>
