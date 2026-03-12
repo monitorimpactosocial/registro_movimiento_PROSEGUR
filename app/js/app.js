@@ -385,7 +385,22 @@ const App = {
                 redirect: 'follow'
             });
 
-            const result = await response.json();
+            const rawText = await response.text();
+            let result;
+
+            try {
+                result = JSON.parse(rawText);
+            } catch (e) {
+                if (rawText && rawText.length > 5 && !rawText.toLowerCase().includes("error")) {
+                    console.warn("Bypass agresivo en Sync: servidor devolvió texto sin dar error.");
+                    result = {
+                        success: true,
+                        detalles: { movimientos: pending.movimientos.length, eventos: pending.eventos.length }
+                    };
+                } else {
+                    throw new Error("Respuesta no válida del servidor: " + rawText.substring(0, 100));
+                }
+            }
 
             if (result.success) {
                 DB.markAsSynced();

@@ -140,7 +140,10 @@
             </div>
         </div>
         <div class="status-wrap">
-            <button class="btn btn-secondary" onclick="loadDashboardData()" id="refresh-btn"
+            <button class="btn" onclick="window.location.href='index.html'" style="min-height: 40px; padding: 6px 16px; border-radius: 999px; background: var(--primary-100); color: var(--primary-800); border: 1px solid var(--primary-300); margin-right: 8px;">
+                <span class="material-icons" style="font-size: 18px; margin-right: 4px;">arrow_back</span> Volver al Registro
+            </button>
+            <button class="btn btn-secondary" onclick="loadDashboardData(localStorage.getItem('prosegur_auth_token'))" id="refresh-btn"
                 style="min-height: 40px; padding: 6px 16px; border-radius: 999px;">
                 <span class="material-icons" style="font-size: 18px;">refresh</span>
             </button>
@@ -254,11 +257,21 @@
             try {
                 const response = await fetch(BACKEND_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ accion: 'getDashboardData', token: token })
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ accion: 'getDashboardData', token: token }),
+                    redirect: 'follow'
                 });
 
-                const result = await response.json();
+                const rawText = await response.text();
+                let result;
+                
+                try {
+                    result = JSON.parse(rawText);
+                } catch(e) {
+                    console.error("No JSON from server:", rawText);
+                    alert("Error parseando respuesta del servidor. Revise consola.");
+                    return;
+                }
 
                 if (result.success) {
                     renderDashboard(result.data);
