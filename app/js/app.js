@@ -2,10 +2,8 @@
  * app.js - Lógica Principal Integrada PWA (V2)
  */
 
-const BACKEND_URL = "https://script.google.com/macros/s/AKfycbzPE0iSKco9hQybLzQ8jAaU8BD8DtteT07rlWVVdX0aX46qROxByn3kAuOvMREfB5mLmw/exec";
+const BACKEND_URL = "h";
 
-const App = {
-    // ------------------------------------------------------------------------
     // API SECURE AUTHENTICATION
     // ------------------------------------------------------------------------
     checkAuth: function () {
