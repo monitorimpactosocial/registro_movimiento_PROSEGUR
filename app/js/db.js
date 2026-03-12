@@ -9,6 +9,11 @@ const DB = {
         CONFIG: 'prosegur_app_config'
     },
 
+    // Método de inicialización (evita que index.html lance error)
+    init: function () {
+        // Reservado por si requerimos setup complejo offline en el futuro
+    },
+
     // Generar ID único
     generateUUID: function () {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
