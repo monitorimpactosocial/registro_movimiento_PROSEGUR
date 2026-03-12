@@ -2,7 +2,7 @@
  * app.js - Lógica Principal Integrada PWA (V2)
  */
 
-const BACKEND_URL = "https://script.google.com/macros/s/AKfycbyXAsbI_HMolHsvq3Df2-q-zMhYlLfux5kZhBOu2dS03lMyF-5J5nPXqIfEFZJulp9KvQ/exec";
+const BACKEND_URL = "https://script.google.com/macros/s/AKfycby88QdlS_piWVMa7-xxYbfMBwjU1S6YjEqSXiYxM9l2_hUIbeSJS79dsC0bqYCzghmH3A/exec";
 
 const App = {
     // ------------------------------------------------------------------------
