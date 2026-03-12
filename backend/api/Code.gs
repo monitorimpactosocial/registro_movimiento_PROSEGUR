@@ -153,7 +153,7 @@ function getDashboardData() {
   if (sheetMov && sheetMov.getLastRow() > 1) {
     const dataMov = sheetMov.getDataRange().getValues();
     for (let i = 1; i < dataMov.length; i++) {
-       const tipo = (dataMov[i][5] || "").toLowerCase();
+       const tipo = String(dataMov[i][5] || "").trim().toLowerCase();
        if (tipo === 'entrada') stats.entradasTotales++;
        if (tipo === 'salida') stats.salidasTotales++;
     }
@@ -166,15 +166,23 @@ function getDashboardData() {
 
     for (let i = dataEvt.length - 1; i > 0 && stats.eventosRecientes.length < 15; i--) {
       try {
-          const dateObj = new Date(dataEvt[i][1]);
-          const formattedDate = Utilities.formatDate(dateObj, Session.getScriptTimeZone(), "dd/MM/yyyy HH:mm");
+          const rawDate = dataEvt[i][6]; // Fecha del evento (Header: 'Fecha' en col G)
+          const dateObj = new Date(rawDate);
+          let formattedDate = rawDate;
+          if (!isNaN(dateObj.getTime())) {
+             formattedDate = Utilities.formatDate(dateObj, Session.getScriptTimeZone(), "dd/MM/yyyy");
+          }
+          
+          let hora = String(dataEvt[i][7] || "");
+          if (hora) formattedDate += " " + hora;
+
           stats.eventosRecientes.push({
             fecha: formattedDate,
-            puesto: dataEvt[i][3],
-            tipo: dataEvt[i][5],
-            descripcion: dataEvt[i][9],
-            gravedad: dataEvt[i][10],
-            foto: dataEvt[i][13]
+            puesto: dataEvt[i][3],       // Puesto
+            tipo: dataEvt[i][5],         // Tipo Evento
+            descripcion: dataEvt[i][9],  // Descripción
+            gravedad: dataEvt[i][10],    // Gravedad
+            foto: dataEvt[i][13]         // Link Evidencia
           });
       } catch(e) {
           // Ignorar fila si hay error de fecha
