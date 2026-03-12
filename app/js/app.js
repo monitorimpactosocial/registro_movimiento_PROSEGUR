@@ -28,8 +28,9 @@ const App = {
         try {
             const resp = await fetch(BACKEND_URL, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ accion: 'verificarLogin', user: user, pass: pass })
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ accion: 'verificarLogin', user: user, pass: pass }),
+                redirect: 'follow'
             });
 
             const data = await resp.json();
@@ -349,13 +350,14 @@ const App = {
         try {
             const response = await fetch(BACKEND_URL, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify({
                     accion: 'sincronizarRegistros',
                     token: token,
                     movimientos: pending.movimientos,
                     eventos: pending.eventos
-                })
+                }),
+                redirect: 'follow'
             });
 
             const result = await response.json();

@@ -238,8 +238,8 @@ function procesarSincronizacion(requestData) {
 
             const decoded = Utilities.base64Decode(b64Data);
             const extension = mimeType.split('/')[1] || 'img';
-            const fileName = \`EVID_EVT_\${item.id.split('-')[0]}.\${extension}\`;
-            
+            const evtId = (item.id && typeof item.id === 'string') ? item.id.split('-')[0] : new Date().getTime();
+            const fileName = "EVID_EVT_" + evtId + "." + extension;            
             const blob = Utilities.newBlob(decoded, mimeType, fileName);
             const file = folder.createFile(blob);
             fileUrl = file.getUrl();
