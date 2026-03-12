@@ -137,6 +137,25 @@
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('dashboard-screen').classList.remove('hidden');
                 document.getElementById('logout-btn').classList.remove('hidden');
+
+                // Si es admin, mostrar botón al Dashboard Gerencial
+                if (userData.rol === 'admin') {
+                    const dashboardGrid = document.querySelector('.dashboard-grid');
+                    if (dashboardGrid && !document.getElementById('admin-dashboard-link')) {
+                        const adminLink = document.createElement('a');
+                        adminLink.href = 'dashboard.html';
+                        adminLink.id = 'admin-dashboard-link';
+                        adminLink.className = 'btn-module';
+                        adminLink.style = 'background: linear-gradient(135deg, var(--primary), var(--primary-700)); color:var(--text-inverse);';
+                        adminLink.innerHTML = `
+                            <span class="material-icons icon" style="color:var(--text-inverse);">pie_chart</span>
+                            <div class="text" style="color:var(--text-inverse);">Dashboard Gerencial</div>
+                            <div class="sub" style="color:rgba(255,255,255,0.8);">Métricas y reportes</div>
+                        `;
+                        // Insertar al principio
+                        dashboardGrid.insertBefore(adminLink, dashboardGrid.firstChild);
+                    }
+                }
             }
             App.updateBadge();
 
