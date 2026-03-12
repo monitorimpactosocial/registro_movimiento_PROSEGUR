@@ -104,6 +104,8 @@ function verificarLogin(user, pass) {
     authUser = { id: 2, nombre: 'Administrador PARACEL', rol: 'admin' };
   } else if (user === 'diego' && pass === 'diego2026') {
     authUser = { id: 3, nombre: 'Diego Meza', rol: 'admin' };
+  } else if (user === 'user' && pass === '123') {
+    authUser = { id: 4, nombre: 'Admin Temporal', rol: 'admin' };
   }
 
   if (authUser) {
