@@ -71,6 +71,12 @@ function doPost(e) {
   }
 }
 
+// Responder a visitas directas en el navegador (Evita error "No se encontró doGet")
+function doGet(e) {
+  return ContentService.createTextOutput("API PROSEGUR V2 - Backend Activo y Seguro.")
+    .setMimeType(ContentService.MimeType.TEXT);
+}
+
 // Permitir solicitudes de pre-vuelo CORS (Modo PWA)
 function doOptions(e) {
   return ContentService.createTextOutput("")
